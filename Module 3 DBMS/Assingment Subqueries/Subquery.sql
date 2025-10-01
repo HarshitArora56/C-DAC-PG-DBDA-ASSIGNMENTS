@@ -44,8 +44,13 @@ where salary > (select avg(salary) from employees) order by salary;
 
 -- 6. Write a query to find the name (first_name, last_name), and salary of the employees whose salary is equal to the minimum salary for their job grade. 
 
-select concat(first_name, ' ', last_name) as emp_name, salary, job_id from employees e
-where salary = (select min_salary from jobs j where e.job_id = j.job_id);
+select concat(first_name, ' ', last_name) as emp_name, salary, job_id 
+from employees e
+where salary = (
+select min_salary 
+from jobs j 
+where e.job_id = j.job_id
+);
 
 -- 7. Write a query to find the name (first_name, last_name), and salary of the employees who earns more than the average salary and works in any of the IT departments. 
 
@@ -60,6 +65,7 @@ where salary > (select salary from employees where last_name = 'Bell');
 
 -- doubt
 -- 9. Write a query to find the name (first_name, last_name), and salary of the employees who earn the same salary as the minimum salary for all departments. 
+
 select concat(first_name,' ',last_name) as emp_name, salary 
 from employees 
 where salary = (select min(min_salary) from jobs);
@@ -77,10 +83,20 @@ where e.salary > (
 -- 11. Write a query to find the name (first_name, last_name) and salary of the employees who earn a salary that is higher than the salary of 
 -- all the Shipping Clerk (JOB_ID = 'SH_CLERK'). Sort the results of the salary of the lowest to highest. 
 
-select concat(first_name,' ',last_name) as emp_name, salary from employees where salary > all(select salary from employees where job_id = "SH_CLERK") order by salary asc;
+select concat(first_name,' ',last_name) as emp_name, salary 
+from employees 
+where salary > 
+all(select salary 
+from employees 
+where job_id = "SH_CLERK"
+) 
+order by salary asc;
 
 -- 12. Write a query to find the name (first_name, last_name) of the employees who are not supervisors. 
-select concat(first_name,' ',last_name) as emp_name from employees where employee_id not in(Select distinct manager_id from employees where manager_id is not null);
+
+select concat(first_name,' ',last_name) as emp_name 
+from employees 
+where employee_id not in(Select distinct manager_id from employees where manager_id is not null);
 
 -- 13. Write a query to display the employee ID, first name, last name, and department names of all employees. 
 
@@ -108,6 +124,7 @@ select distinct salary as fourth_min_salary from employees where salary = (selec
 -- select * from employees where employee_id  in(select employee_id from employees order by employee_id desc limit 10);
 
 -- 19. Write a query to list the department ID and name of all the departments where no employee is working. 
+
 select * from departments;
 select department_id, department_name from departments where department_id not in (select department_id from employees where department_id is not null); 
 
@@ -120,20 +137,35 @@ select distinct salary from employees where salary > (select distinct salary fro
 select distinct salary from employees where salary < (select distinct salary from employees order by salary asc limit 1 offset 3);
 
 -- 22. Write a query to get nth max salaries of employees. 
-select salary as nt_max_salary from employees where salary = (select distinct salary from employees order by salary desc limit 1 offset n-1);
-
+select salary as nt_max_salary from employees where salary = (select distinct salary from employees order by salary desc limit 1 offset n - 1);
 
 -- Write a query that returns all employees who have a salary greater than the average salary of their department.
-
+select employee_id, concat(first_name,' ', last_name) as emp_name, salary
+from employees e
+where salary > (select avg(salary) from employees where department_id = e.department_id);
 
 -- Write a query that returns the names of all departments that have more than 10 employees.
-
+select d.department_name
+from departments d
+where department_id in (
+	select department_id 
+    from employees 
+    group by department_id 
+    having count(employee_id)>10
+);
 
 -- Write a query that returns the names of all employees who work in departments that have a total salary greater than $1,000,000.
-
+select concat(first_name,' ', last_name) as emp_name 
+from employees e
+where department_id  in(
+	select department_id 
+	from employees 
+	group by department_id 
+	having sum(salary) > 1000000
+);
 
 -- Write a query that returns the average salary of all employees who have been with the company for less than 3 years.
-
+select 
 
 -- Write a query that returns the names of all employees who have the same manager as the employee with ID 123.
 
@@ -151,4 +183,3 @@ select salary as nt_max_salary from employees where salary = (select distinct sa
 
 
 -- Write a query that returns the name and salary of the employee with the second-highest salary in the company.
-
