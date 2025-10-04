@@ -49,5 +49,3 @@ having count(order_id) > 10;
 
 
 
-
-
